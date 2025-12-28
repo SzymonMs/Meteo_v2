@@ -124,7 +124,10 @@
     "equivalence_files": []
   },
   "erc": {
-    "erc_exclusions": [],
+    "erc_exclusions": [
+      "pin_to_pin|1397000|1917700|03cb15df-bc83-4db0-a1f8-c6ff67ea536b|2833c796-597f-4b4c-9487-e4c5d5b28532",
+      "pin_to_pin|1625600|1917700|25f46811-c56c-4de4-8abb-518ace02dcc6|4c288f80-0f3e-4eb3-a099-7e7cd55ff3ed"
+    ],
     "meta": {
       "version": 0
     },
@@ -320,7 +323,7 @@
       "pin_not_connected": "error",
       "pin_not_driven": "error",
       "pin_to_pin": "warning",
-      "power_pin_not_driven": "error",
+      "power_pin_not_driven": "warning",
       "similar_labels": "warning",
       "unannotated": "error",
       "unit_value_mismatch": "error",

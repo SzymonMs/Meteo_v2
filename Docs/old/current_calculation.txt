@@ -1,6 +1,6 @@
 DS18B20 (MAX): 5mA
 AM2320 (DURING MEASURE): 1mA
-BMP180 (MAX): 1mA (peak current during conversion [from datasheet])
+BMP280 (MAX): 1mA
 e-paper (MAX): 10mA
 ATMEGA: ~20mA
 
