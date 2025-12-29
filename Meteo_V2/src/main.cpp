@@ -48,6 +48,8 @@ char humidityStr[10];
 float oldHumidity = 0.0f;
 float humidityDiff;
 
+int loopCounter = 0;
+
 void setup()
 {
   Serial.begin(9600);
@@ -73,6 +75,7 @@ void setup()
   paint.Clear(COLORED);
   paint.DrawStringAt(0, 4, "Humidity [%]", &Font16, UNCOLORED);
   epd.SetFrameMemory(paint.GetImage(), 0, 130, paint.GetWidth(), paint.GetHeight());
+ // epd.DisplayFrame();
 }
 
 void loop()
@@ -116,7 +119,6 @@ void loop()
   oldPressure = pressure;
   oldOutTemperature = outdoortemperature;
   oldHumidity = humidty;
-  
-  // Wait for 10 seconds before next reading
+  loopCounter++;
   delay(10000);
 }
