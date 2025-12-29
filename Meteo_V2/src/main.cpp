@@ -95,7 +95,7 @@ void loop()
   temperatureOutDiff = fabs(outdoortemperature-oldOutTemperature);
 
   // Update display only if significant change detected
-  if (temperatureDiff > 0.5f ||temperatureOutDiff > 0.5f || oldPressure != pressure || humidityDiff>0.5f)
+  if (temperatureDiff > 0.5f ||temperatureOutDiff > 0.5f || oldPressure != pressure || humidityDiff>1.0f)
   {
     paint.Clear(UNCOLORED);
     paint.DrawStringAt(0, 4, tempStr, &Font20, COLORED);
