@@ -21,7 +21,7 @@
 Adafruit_BMP085 bmp;
 // E-Paper object
 Epd epd;
-unsigned char image[1024];
+unsigned char image[512];
 Paint paint(image, 0, 0);
 // Outdoor temperature sensor object
 OneWire oneWire(OUTTEMPSENSOR);
@@ -49,33 +49,19 @@ float oldHumidity = 0.0f;
 float humidityDiff;
 
 int loopCounter = 0;
-
+bool epdStatus = true;
+int delayTime = 10000; // Delay time in ms
 void setup()
 {
   Serial.begin(9600);
-
+  // delay(2000);
   // Initialize BMP180, DS18B20 sensors and E-Paper display
   bmp.begin();
   epd.LDirInit();
   epd.Clear();
   paint.SetWidth(200);
-  paint.SetHeight(24);
+  paint.SetHeight(16);
   outTermo.begin();
-
-  // Create static labels on the display
-  paint.Clear(COLORED);
-  paint.DrawStringAt(0, 4, "Temperature [*C]", &Font16, UNCOLORED);
-  epd.SetFrameMemory(paint.GetImage(), 0, 10, paint.GetWidth(), paint.GetHeight());
-  paint.Clear(COLORED);
-  paint.DrawStringAt(0, 4, "Pressure [hPa]", &Font16, UNCOLORED);
-  epd.SetFrameMemory(paint.GetImage(), 0, 50, paint.GetWidth(), paint.GetHeight());
-  paint.Clear(COLORED);
-  paint.DrawStringAt(0, 4, "Out temp [*C]", &Font16, UNCOLORED);
-  epd.SetFrameMemory(paint.GetImage(), 0, 90, paint.GetWidth(), paint.GetHeight());
-  paint.Clear(COLORED);
-  paint.DrawStringAt(0, 4, "Humidity [%]", &Font16, UNCOLORED);
-  epd.SetFrameMemory(paint.GetImage(), 0, 130, paint.GetWidth(), paint.GetHeight());
- // epd.DisplayFrame();
 }
 
 void loop()
@@ -100,19 +86,38 @@ void loop()
   // Update display only if significant change detected
   if (temperatureDiff > 0.5f ||temperatureOutDiff > 0.5f || oldPressure != pressure || humidityDiff>1.0f)
   {
-    paint.Clear(UNCOLORED);
-    paint.DrawStringAt(0, 4, tempStr, &Font20, COLORED);
-    epd.SetFrameMemory(paint.GetImage(), 0, 30, paint.GetWidth(), paint.GetHeight());
-    paint.Clear(UNCOLORED);
-    paint.DrawStringAt(0, 4, pressStr, &Font20, COLORED);
-    epd.SetFrameMemory(paint.GetImage(), 0, 70, paint.GetWidth(), paint.GetHeight());
-    paint.Clear(UNCOLORED);
-    paint.DrawStringAt(0, 4, outtempStr, &Font20, COLORED);
-    epd.SetFrameMemory(paint.GetImage(), 0, 110, paint.GetWidth(), paint.GetHeight());
-    paint.Clear(UNCOLORED);
-    paint.DrawStringAt(0, 4, humidityStr, &Font20, COLORED);
-    epd.SetFrameMemory(paint.GetImage(), 0, 150, paint.GetWidth(), paint.GetHeight());
-    epd.DisplayFrame();
+      if(!epdStatus){
+        epd.LDirInit();
+        // epd.Clear();
+        epdStatus = true;
+        loopCounter = 0;
+    }
+      // Create static labels on the display
+      paint.Clear(COLORED);
+      paint.DrawStringAt(0, 4, "Temperature [*C]", &Font16, UNCOLORED);
+      epd.SetFrameMemory(paint.GetImage(), 0, 10, paint.GetWidth(), paint.GetHeight());
+      paint.Clear(COLORED);
+      paint.DrawStringAt(0, 4, "Pressure [hPa]", &Font16, UNCOLORED);
+      epd.SetFrameMemory(paint.GetImage(), 0, 50, paint.GetWidth(), paint.GetHeight());
+      paint.Clear(COLORED);
+      paint.DrawStringAt(0, 4, "Out temp [*C]", &Font16, UNCOLORED);
+      epd.SetFrameMemory(paint.GetImage(), 0, 90, paint.GetWidth(), paint.GetHeight());
+      paint.Clear(COLORED);
+      paint.DrawStringAt(0, 4, "Humidity [%]", &Font16, UNCOLORED);
+      epd.SetFrameMemory(paint.GetImage(), 0, 130, paint.GetWidth(), paint.GetHeight());
+      paint.Clear(UNCOLORED);
+      paint.DrawStringAt(0, 4, tempStr, &Font16, COLORED);
+      epd.SetFrameMemory(paint.GetImage(), 0, 30, paint.GetWidth(), paint.GetHeight());
+      paint.Clear(UNCOLORED);
+      paint.DrawStringAt(0, 4, pressStr, &Font16, COLORED);
+      epd.SetFrameMemory(paint.GetImage(), 0, 70, paint.GetWidth(), paint.GetHeight());
+      paint.Clear(UNCOLORED);
+      paint.DrawStringAt(0, 4, outtempStr, &Font16, COLORED);
+      epd.SetFrameMemory(paint.GetImage(), 0, 110, paint.GetWidth(), paint.GetHeight());
+      paint.Clear(UNCOLORED);
+      paint.DrawStringAt(0, 4, humidityStr, &Font16, COLORED);
+      epd.SetFrameMemory(paint.GetImage(), 0, 150, paint.GetWidth(), paint.GetHeight());
+      epd.DisplayFrame();
   }
 
   oldTemperature = temperature;
@@ -120,5 +125,11 @@ void loop()
   oldOutTemperature = outdoortemperature;
   oldHumidity = humidty;
   loopCounter++;
-  delay(10000);
+  
+  if(loopCounter>=(delayTime/1000)*24){
+    epd.Sleep();
+    epdStatus = false;
+  }
+
+  delay(delayTime);
 }
