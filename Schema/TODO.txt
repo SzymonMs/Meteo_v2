@@ -1,0 +1,4 @@
+TO DO in schema:
+
+- ePaper to LCD
+- check PINs of Atmega
